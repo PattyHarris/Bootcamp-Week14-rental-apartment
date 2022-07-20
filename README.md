@@ -46,4 +46,21 @@ npm install @prisma/client
 
 7. The details and reviews show in 2 columns. When the screen is small, they are shown in a single column.
 8. The reviews are from static data.
-9. The destination list is also from static data.  The destination descriptions show in a grid that is 4 columns are a large screen, 2 on a medium screen, and 1 on a small screen.
+9. The destination list is also from static data. The destination descriptions show in a grid that is 4 columns are a large screen, 2 on a medium screen, and 1 on a small screen.
+
+## Define Config Data
+
+1. The config data will reside in 'lib/config.js'.
+2. Flavio uses the following code in the config file which generates a eslint warning:
+
+```
+export default {
+
+}
+```
+
+I added the following to the top of the file - this option is better than changing the eslintrc.json file:
+
+```
+/* eslint-disable import/no-anonymous-default-export */
+```
