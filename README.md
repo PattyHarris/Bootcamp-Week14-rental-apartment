@@ -76,3 +76,11 @@ npm install react-day-picker date-fns
 ```
 
 4. Add the library and the 'style.css' file to 'calendar.js'.
+
+## Show Available Dates in the Calendar
+
+1. Add un-selectable dates such as the blocked dates in the config file as well as dates in the past.
+2. The primary changes here are in the new file 'lib/dates.js'.
+3. Start by importing 'isDaySelectable' from 'dates.js' in 'calendar.js'. Update the JSX for the calendar picker to include props from dates.js.
+4. The remaining changes are to 'dates.js' to return various bits of data related information.
+5. There's a major error with the current text portion of this tutorial - took me some time to figure it out since the errors are misleading. Turns out the first bit of JSX where the prop data is based to the Calendar library is wrong - it's correct in the video. It's missing back ticks among other things.
