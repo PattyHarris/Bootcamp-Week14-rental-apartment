@@ -64,3 +64,15 @@ I added the following to the top of the file - this option is better than changi
 ```
 /* eslint-disable import/no-anonymous-default-export */
 ```
+
+## Create a Calendar Page
+
+1. Add the 'calendar.js' page.
+2. The heading JSX in 'calendar.js' is nearly the same as with 'index.js'.
+3. Install the React day picker:
+
+```
+npm install react-day-picker date-fns
+```
+
+4. Add the library and the 'style.css' file to 'calendar.js'.
