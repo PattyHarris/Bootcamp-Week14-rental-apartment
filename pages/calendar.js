@@ -1,12 +1,59 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 
-import { isDaySelectable } from "lib/dates";
+import {
+  isDaySelectable,
+  addDayToRange,
+  getDatesBetweenDates,
+} from "lib/dates";
 import { getCost } from "lib/cost";
 
 export default function Calendar() {
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
+
+  // Handle the click from the calendar.
+  const handleDayClick = (day) => {
+    const range = addDayToRange(day, {
+      from,
+      to,
+    });
+
+    // If only one date is selected, set both the 'to' and 'from' to
+    // the 'from' date (assuming it's selectable).
+    if (!range.to) {
+      if (!isDaySelectable(range.from)) {
+        alert("This date cannot be selected");
+        return;
+      }
+      range.to = range.from;
+    }
+
+    // Make sure the 'to' date is selectable.
+    if (range.to && range.from) {
+      if (!isDaySelectable(range.to)) {
+        alert("The end date cannot be selected");
+        return;
+      }
+    }
+
+    // Make sure all the days between the 'to' and 'from' are selectable.
+    const daysInBetween = getDatesBetweenDates(range.from, range.to);
+
+    for (const dayInBetween of daysInBetween) {
+      if (!isDaySelectable(dayInBetween)) {
+        alert("Some days between those 2 dates cannot be selected");
+        return;
+      }
+    }
+
+    setFrom(range.from);
+    setTo(range.to);
+  };
+
   return (
     <div>
       <Head>
@@ -76,6 +123,9 @@ export default function Calendar() {
                   </div>
                 ),
               }}
+              mode="range"
+              selected={[from, { from, to }]}
+              onDayClick={handleDayClick}
             />
           </div>
         </div>

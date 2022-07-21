@@ -90,3 +90,13 @@ npm install react-day-picker date-fns
 
 1. Add a new file 'lib/costs.js' which contains functions for returning cost information - 'getCost'.
 2. Use the 'getCost' function in 'calendar.js'. The end result is that the price is listed below the date - looks a bit weird to me....
+
+## Allow Start and End Date Selection
+
+1. In 'calendar.js', add 'useState' to manage the start and end dates.
+2. Add the 'from' and 'to' props to the DayPicker and set the mode to 'range'.
+3. This section is a mess - there's a number of problems in the text portion of the explanation - shows variables and props we're not using.
+4. The idea here is that we add some props to the calendar widget to allow selection of a range of dates.
+5. The function 'addDayToRange' is added to 'lib/dates.js' to handle the date range selection.
+6. Add 'getDatesBetweenDates()' to 'lib/data.js' which is used to verify that all the dates between 'to' and 'from' are selectable.
+7. The date selection is still a bit weird - but works as expected in the lesson.
