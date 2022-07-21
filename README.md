@@ -84,3 +84,9 @@ npm install react-day-picker date-fns
 3. Start by importing 'isDaySelectable' from 'dates.js' in 'calendar.js'. Update the JSX for the calendar picker to include props from dates.js.
 4. The remaining changes are to 'dates.js' to return various bits of data related information.
 5. There's a major error with the current text portion of this tutorial - took me some time to figure it out since the errors are misleading. Turns out the first bit of JSX where the prop data is based to the Calendar library is wrong - it's correct in the video. It's missing back ticks among other things.
+6. The day selected also cannot be more than 6 months out - e.g. 30 \* 6.
+
+## Show Available Date Pricing
+
+1. Add a new file 'lib/costs.js' which contains functions for returning cost information - 'getCost'.
+2. Use the 'getCost' function in 'calendar.js'. The end result is that the price is listed below the date - looks a bit weird to me....

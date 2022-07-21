@@ -2,7 +2,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+
 import { isDaySelectable } from "lib/dates";
+import { getCost } from "lib/cost";
 
 export default function Calendar() {
   return (
@@ -60,7 +62,17 @@ export default function Calendar() {
                       !isDaySelectable(props.date) && "text-gray-500"
                     }`}
                   >
-                    {props.date.getDate()}
+                    <div>{props.date.getDate()}</div>
+
+                    {isDaySelectable(props.date) && (
+                      <div className="-mt-2">
+                        <span
+                          className={`bg-white text-black rounded-md font-bold px-1 text-xs`}
+                        >
+                          ${getCost(props.date)}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ),
               }}

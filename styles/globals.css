@@ -17,6 +17,10 @@ a {
   box-sizing: border-box;
 }
 
+.rdp-day {
+  border-radius: 0 !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
