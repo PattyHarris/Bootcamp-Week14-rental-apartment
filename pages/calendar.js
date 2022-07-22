@@ -8,17 +8,22 @@ import {
   isDaySelectable,
   addDayToRange,
   getDatesBetweenDates,
+  calcNumberOfNightsBetweenDates,
   getBlockedDates,
 } from "lib/dates";
 
 import { getBookedDates } from "lib/bookings";
 
-import { getCost } from "lib/cost";
+import { getCost, calcTotalCostOfStay } from "lib/cost";
 
 export default function Calendar() {
   const [from, setFrom] = useState();
   const [to, setTo] = useState();
 
+  const [numberOfNights, setNumberOfNights] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
+
+  //==========================
   // Handle the click from the calendar.
   const handleDayClick = (day) => {
     const range = addDayToRange(day, {
@@ -56,6 +61,17 @@ export default function Calendar() {
 
     setFrom(range.from);
     setTo(range.to);
+
+    // Bug fix: if you select 1 night and the select it again (e.g. select and then unselect)
+    // Both these values will be null....
+    if (range.from == null && range.to === null) {
+      setNumberOfNights(0);
+      setTotalCost(0);
+      return;
+    }
+
+    setNumberOfNights(calcNumberOfNightsBetweenDates(range.from, range.to) + 1);
+    setTotalCost(calcTotalCostOfStay(range.from, range.to));
   };
 
   // For disabling dates - all dates in the past and all dates in the
@@ -111,7 +127,28 @@ export default function Calendar() {
           <p className="text-2xl font-bold text-center my-10">
             Availability and prices per night
           </p>
+          <p className="text-center">
+            {numberOfNights > 0 && `Stay for ${numberOfNights} nights`}
+          </p>
+          <p className="text-center mt-2">
+            {totalCost > 0 && `Total cost: $${totalCost}`}
+          </p>
 
+          <p className="text-center">
+            {from && to && (
+              <button
+                className="border px-2 py-1 mt-4"
+                onClick={() => {
+                  setFrom(null);
+                  setTo(null);
+                  setNumberOfNights(0);
+                  setTotalCost(0);
+                }}
+              >
+                Reset
+              </button>
+            )}
+          </p>
           <div className="pt-6 flex justify-center availability-calendar">
             <DayPicker
               disabled={[

@@ -135,3 +135,11 @@ sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 30 * 6)
   //....
 />
 ```
+
+## Determine the Cost of a Stay
+
+1. Calculate the total price for the stay period.
+2. In 'calendar.js', add 2 state variables 'numberOfNights' and 'totalCost'.
+3. Add JSX for these variables below 'Availability and prices per night'.
+4. Refactor 'handleDayClick' to calculate their values. We need to import 'calcNumberOfNightsBetweenDates' and add the code for 'calcTotalCostOfStay'. The latter function is added to 'lib/cost.js'. Import into 'calendar.js'.
+5. Add a reset button underneath the cost, so a user can clear the selection.
