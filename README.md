@@ -100,3 +100,38 @@ npm install react-day-picker date-fns
 5. The function 'addDayToRange' is added to 'lib/dates.js' to handle the date range selection.
 6. Add 'getDatesBetweenDates()' to 'lib/data.js' which is used to verify that all the dates between 'to' and 'from' are selectable.
 7. The date selection is still a bit weird - but works as expected in the lesson.
+
+## Disable Dates
+
+1. Here we're going to make dates that aren't selectable not selectable - meaning, currently, these dates are 'greyed', but can still be highlighted..
+2. To fix this, we add an array of dates we don’t want to let people select.
+3. Add 'getBlockedDates' to 'lib/dates.js' and import the function in 'calendar.js'.
+4. Pass the results of this call in the 'disabled' prop to the DayPicker.
+5. Add 'lib/bookings.js' with a new function 'getBookedDates' - it's good to break this out, but it's really not that much different (at this point) than the other date functions in 'dates.js'. Add the call as a prop to DayPicker.
+6. Add dates from the past and the future - putting this entirely here since it's a bit weird:
+
+```
+const yesterday = new Date()
+yesterday.setDate(yesterday.getDate() - 1)
+
+const sixMonthsFromNow = new Date()
+sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 30 * 6)
+
+//...
+
+    <DayPicker
+        disabled={[
+        ...getBlockedDates(),
+        ...getBookedDates(),
+        {
+            from: new Date("0000"),
+            to: yesterday,
+        },
+        {
+            from: sixMonthsFromNow,
+            to: new Date("4000"),
+        },
+        ]}
+  //....
+/>
+```

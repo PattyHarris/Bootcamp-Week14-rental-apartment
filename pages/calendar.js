@@ -8,7 +8,11 @@ import {
   isDaySelectable,
   addDayToRange,
   getDatesBetweenDates,
+  getBlockedDates,
 } from "lib/dates";
+
+import { getBookedDates } from "lib/bookings";
+
 import { getCost } from "lib/cost";
 
 export default function Calendar() {
@@ -53,6 +57,14 @@ export default function Calendar() {
     setFrom(range.from);
     setTo(range.to);
   };
+
+  // For disabling dates - all dates in the past and all dates in the
+  // future.
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const sixMonthsFromNow = new Date();
+  sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 30 * 6);
 
   return (
     <div>
@@ -102,6 +114,18 @@ export default function Calendar() {
 
           <div className="pt-6 flex justify-center availability-calendar">
             <DayPicker
+              disabled={[
+                ...getBlockedDates(),
+                ...getBookedDates(),
+                {
+                  from: new Date("0000"),
+                  to: yesterday,
+                },
+                {
+                  from: sixMonthsFromNow,
+                  to: new Date("4000"),
+                },
+              ]}
               components={{
                 DayContent: (props) => (
                   <div
