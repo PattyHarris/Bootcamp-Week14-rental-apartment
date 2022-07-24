@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import Script from "next/script";
+
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -90,6 +92,8 @@ export default function Calendar() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Script src="https://js.stripe.com/v3/" />
+
       <div className="relative overflow-hidden">
         <div className="relative">
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-100"></div>
@@ -133,6 +137,39 @@ export default function Calendar() {
           <p className="text-center mt-2">
             {totalCost > 0 && `Total cost: $${totalCost}`}
           </p>
+
+          {numberOfNights > 0 && (
+            <button
+              className="bg-green-500 text-white mt-5 mx-auto w-40 px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm  sm:px-8"
+              onClick={async () => {
+                const res = await fetch("/api/stripe/session", {
+                  body: JSON.stringify({
+                    from,
+                    to,
+                  }),
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  method: "POST",
+                });
+
+                const data = await res.json();
+                const sessionId = data.sessionId;
+                const stripePublicKey = data.stripePublicKey;
+
+                const stripe = Stripe(stripePublicKey);
+                const { error } = await stripe.redirectToCheckout({
+                  sessionId,
+                });
+
+                if (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              Book now
+            </button>
+          )}
 
           <p className="text-center">
             {from && to && (

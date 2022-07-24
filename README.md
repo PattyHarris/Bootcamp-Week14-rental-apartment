@@ -143,3 +143,62 @@ sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 30 * 6)
 3. Add JSX for these variables below 'Availability and prices per night'.
 4. Refactor 'handleDayClick' to calculate their values. We need to import 'calcNumberOfNightsBetweenDates' and add the code for 'calcTotalCostOfStay'. The latter function is added to 'lib/cost.js'. Import into 'calendar.js'.
 5. Add a reset button underneath the cost, so a user can clear the selection.
+6. Fixed a bug where there is an exception thrown if you select a single day and then unselect that same day. In this case, the 'to' and 'from' dates are both null....handle in 'handleDayClick' in 'calendar.js'.
+
+## Create the Data Model to Host Bookings
+
+1. Now that we're functional with fake data, we'll add the a data model to store and retrieve the data.
+2. We'll add a Booking model - note the fields that will be used with Stripe. The email will come from Stripe (as does the session ID).
+
+## Implement Payment using Stripe
+
+1. As before we need to install strip and raw-body.
+
+```
+npm install stripe raw-body
+```
+
+2. We also need to add the following to the .env file (which I already did):
+
+```
+STRIPE_PUBLIC_KEY=
+STRIPE_SECRET_KEY=
+BASE_URL=http://localhost:3000
+STRIPE_WEBHOOK_SECRET=
+```
+
+3. In the terminal, run the following - from the output, you will get the STRIPE_WEBHOOK_SECRET as well:
+
+```
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+4. Add stripe to the calendar page - I use the same mechanism from the last project - this gets rid of some warnings:
+
+```
+import Script from "next/script";
+.....
+<Script src="https://js.stripe.com/v3/" />
+```
+
+5. Add a 'Book Now' button after the number of days selected (if any days have been selected). The onClick handler is like we did in Week 13 - e.g. make a POST to '/api/stripe/session'.
+6. Add the endpoint handler 'api/stripe/session.js'. To fix the warnings about "Assign object to a variable before exporting as module default", add the following to eslintrc.json:
+
+```
+"import/no-anonymous-default-export": "off"
+```
+
+Or, explicitly define the export:
+
+```
+const session = async (req, res) +> {
+
+}
+export default session;
+```
+
+7. In the 'session' handler, we first calculate the cost of the stay. Then, create a request to Stripe with the data for the bookings. Assuming success, we then store the session ID along with the to and from dates. The data also stores this entry as unpaid. Lastly, as with the last lesson, we return the session ID. Note that this is all server side code....
+8. In 'calendar.js', when the data is returned is received, we redirect to Stripe to handle payment.
+9. As before, you can use '4242 4242 4242 4242' for the credit card. Any fake email will do as well.
+10. When the payment is done, we redirect the user to the '/success' URL, which is handled in 'pages/success.js'. This page indicates to the user that an email is sent to verify the details of the stay.
+11. Stripe in the meanwhile, sends us a webhook - 'pages/api/stripe/webhook.js'. Here we update the 'unpaid' status to 'paid' and clear the session ID from the database. The response back to Stripe indicates to Stripe that we have received the webhook.
