@@ -202,3 +202,23 @@ export default session;
 9. As before, you can use '4242 4242 4242 4242' for the credit card. Any fake email will do as well.
 10. When the payment is done, we redirect the user to the '/success' URL, which is handled in 'pages/success.js'. This page indicates to the user that an email is sent to verify the details of the stay.
 11. Stripe in the meanwhile, sends us a webhook - 'pages/api/stripe/webhook.js'. Here we update the 'unpaid' status to 'paid' and clear the session ID from the database. The response back to Stripe indicates to Stripe that we have received the webhook.
+
+## Send Confirmation Emails
+
+1. We send 2 emails - one to the home owner and one to the user that booked the stay.
+2. Install the nodemailer library:
+
+```
+npm install nodemailer
+```
+
+3. Create a 'lib/email.js' file to contain the 'sendMail' function.
+4. Add 2 environment variables to .evn for 'your' email - note that we can use the mailtrap.io service for this as well:
+
+```
+   EMAIL_SERVER=smtp://YOURACCESS:YOURPASSWORD@smtp.mailtrap.io:465
+   EMAIL_FROM=Your name <you@email.com>
+```
+
+5. Import this function in 'webhook.js'.
+6. After the call to prisma.booking.updateMany(), we'll send the 2 emails. NOTE: in order for this whole process to work and for the emails to be sent correctly, the stripe CLI MUSTS BE RUN in the project folder. After a Mac update, my terminal was running at my root account....noticed this solution in the Discord channel.
