@@ -222,3 +222,16 @@ npm install nodemailer
 
 5. Import this function in 'webhook.js'.
 6. After the call to prisma.booking.updateMany(), we'll send the 2 emails. NOTE: in order for this whole process to work and for the emails to be sent correctly, the stripe CLI MUSTS BE RUN in the project folder. After a Mac update, my terminal was running at my root account....noticed this solution in the Discord channel.
+
+## Reflect Database Changes in the Bookings UI
+
+1. Currently, we're still using the hard-coded config data on the 'calendar.js'. The last step of the lesson is to use the database to show bookings - this step does NOT take care of blocked dates or pricing. That data is still pulled from the config file.
+2. Add 'getServerSideProps' to 'calendar.js' that will retrieve the booked dates from the database.
+3. Import the 'bookedDates' prop in 'Calendar'. See other changes below.
+4. Refactor 'getBookedDates' in 'lib/bookings.js' to pull the booked dates out of the database instead of the config file.
+5. Refactor 'isBooked' in 'dates.js' to pull the data from the database.
+6. Refactor 'isSelectable' in 'dates.js' to accept an array of booked dates ('bookedDates'). Flavio's order of changes is weird - first he changes the calls and THEN changes the functions....
+7. Change all the calls to 'isSelectable' in 'calendar.js' by adding the 'bookedDates' array as a input parameter.
+8. Changed the 'disabled' prop in the 'DayPicker' to use '...bookedDates' instead of '...getBookedDates()'.
+9. Remove the 'booked' object from the config file.
+10. The 'booked dates' are still selectable, but that's an easy fix as a TODO.
