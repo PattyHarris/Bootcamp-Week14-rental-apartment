@@ -28,18 +28,21 @@ export default function Calendar({ bookedDates }) {
   const [totalCost, setTotalCost] = useState(0);
 
   //==========================
+
   // Handle the click from the calendar.
-  const handleDayClick = (day) => {
+  const handleDayClick = (day, modifiers) => {
     const range = addDayToRange(day, {
       from,
       to,
     });
 
+    console.log("Modifiers: " + modifiers.booked);
+
     // If only one date is selected, set both the 'to' and 'from' to
     // the 'from' date (assuming it's selectable).
     if (!range.to) {
       if (!isDaySelectable(range.from, bookedDates)) {
-        alert("This date cannot be selected");
+        alert("This date is unavailable!");
         return;
       }
       range.to = range.from;
@@ -48,7 +51,7 @@ export default function Calendar({ bookedDates }) {
     // Make sure the 'to' date is selectable.
     if (range.to && range.from) {
       if (!isDaySelectable(range.to, bookedDates)) {
-        alert("The end date cannot be selected");
+        alert("The end date is unavailable!");
         return;
       }
     }
@@ -85,6 +88,41 @@ export default function Calendar({ bookedDates }) {
 
   const sixMonthsFromNow = new Date();
   sixMonthsFromNow.setDate(sixMonthsFromNow.getDate() + 30 * 6);
+
+  // Testing the booked date issue...these do not help....
+  //   const css = `
+  //   .my-selected:not([disabled]) {
+  //     font-weight: bold;
+  //     border: 2px solid currentColor;
+  //   }
+  //   .my-selected:hover:not([disabled]) {
+  //     border-color: blue;
+  //     color: blue;
+  //   }
+  //   .my-today {
+  //     font-weight: bold;
+  //     font-size: 140%;
+  //     color: red;
+  //   }
+  //   .my-disabled {
+  //     color: white;
+  //     background-color: #FFCCCB;
+  //     cursor: default;
+  //     pointer-events: non
+  //   }
+  // `;
+
+  //   const bookedStyle = {
+  //     border: "2px solid red",
+  //     pointerEvents: "none",
+  //   };
+
+  let newBookedDates = bookedDates.map((date) => {
+    return new Date(date);
+  });
+
+  const combinedDates = [...getBlockedDates(), ...newBookedDates];
+  combinedDates.sort((a, b) => a - b);
 
   return (
     <div>
@@ -189,10 +227,10 @@ export default function Calendar({ bookedDates }) {
             )}
           </p>
           <div className="pt-6 flex justify-center availability-calendar">
+            {/* <style>{css}</style> */}
             <DayPicker
               disabled={[
-                ...getBlockedDates(),
-                ...bookedDates,
+                ...combinedDates,
                 {
                   from: new Date("0000"),
                   to: yesterday,
@@ -207,7 +245,7 @@ export default function Calendar({ bookedDates }) {
                   <div
                     className={`relative text-right ${
                       !isDaySelectable(props.date, bookedDates) &&
-                      "text-gray-500"
+                      "text-gray-200"
                     }`}
                   >
                     <div>{props.date.getDate()}</div>
@@ -224,6 +262,8 @@ export default function Calendar({ bookedDates }) {
                   </div>
                 ),
               }}
+              // modifiers={{ booked: bookedDates }}
+              // modifiersStyles={{ booked: bookedStyle }}
               mode="range"
               selected={[from, { from, to }]}
               onDayClick={handleDayClick}

@@ -235,3 +235,9 @@ npm install nodemailer
 8. Changed the 'disabled' prop in the 'DayPicker' to use '...bookedDates' instead of '...getBookedDates()'.
 9. Remove the 'booked' object from the config file.
 10. The 'booked dates' are still selectable, but that's an easy fix as a TODO.
+
+## Addendum
+
+I wanted the blocked and booked dates to behave the same. In the current mode, you could still click the booked dates (which leads the logic in handleDayClick). I tried a bunch of stuff from the react-day-picker online help, but really nothing seemed to work - I've left some stuff in place (e.g. modifiers and modifierStyle), but they don't have any affect.
+
+The solution seems to be related to the fact that the booked dates and blocked dates have different date formats. I converted the booked dates to the same format as the blocked dates, created a new array combining both of them, sorted, and then added this new array to the 'disabled' prop. Now the booked dates behave the same as the blocked dates. Done.
